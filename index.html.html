@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>QuickDevis — Devis Pro en 2 minutes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #122040;
+    --navy-light: #1e3560;
+    --orange: #f97316;
+    --orange-light: #fb923c;
+    --orange-glow: rgba(249,115,22,0.18);
+    --white: #ffffff;
+    --grey-100: #f1f5f9;
+    --grey-200: #e2e8f0;
+    --grey-400: #94a3b8;
+    --grey-600: #475569;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --card-bg: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ?? Background décor ?? */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(30,53,96,0.6) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ?? Header ?? */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 62px;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--orange), #ea580c);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(249,115,22,0.4);
+  }
+  .logo-text {
+    font-size: 18px; font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--orange); }
+
+  /* ?? Nav tabs ?? */
+  nav {
+    position: sticky; top: 62px; z-index: 99;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+  }
+  .nav-tab {
+    flex: 1; padding: 14px 8px;
+    text-align: center; cursor: pointer;
+    font-size: 12px; font-weight: 600;
+    color: var(--grey-400);
+    border-bottom: 2px solid transparent;
+    transition: all .25s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .nav-tab.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+  }
+  .nav-tab .tab-icon { font-size: 18px; }
+
+  /* ?? Main content ?? */
+  main { position: relative; z-index: 1; padding: 20px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+  /* ?? Cards ?? */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(8px);
+  }
+
+  .card-title {
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ?? Form elements ?? */
+  .form-group { margin-bottom: 14px; }
+  label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--grey-400); margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  input, textarea, select {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  input:focus, textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-glow);
+  }
+  input::placeholder { color: var(--grey-600); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ?? Buttons ?? */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 20px;
+    border-radius: var(--radius-sm);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer; border: none;
+    transition: all .2s; width: 100%;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange), #ea580c);
+    color: white;
+    box-shadow: 0 4px 20px rgba(249,115,22,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(249,115,22,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--grey-400);
+  }
+  .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: var(--danger);
+    padding: 8px; width: auto;
+  }
+  .btn-sm { padding: 8px 14px; font-size: 12px; width: auto; }
+
+  /* ?? Prestations table ?? */
+  .prestations-header {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px 32px;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .prestations-header span {
+    font-size: 10px; font-weight: 700;
+    color: var(--grey-400); letter-spacing: 0.8px; text-transform: uppercase;
+  }
+
+  .prestation-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px 32px;
+    gap: 6px; margin-bottom: 8px; align-items: center;
+    animation: slideIn .2s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform: none; } }
+
+  .prestation-row input {
+    padding: 10px 10px;
+    font-size: 13px;
+  }
+
+  /* ?? Total ?? */
+  .total-box {
+    background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(249,115,22,0.06));
+    border: 1px solid rgba(249,115,22,0.25);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px;
+  }
+  .total-label { font-size: 13px; font-weight: 600; color: var(--grey-400); }
+  .total-amount {
+    font-size: 22px; font-weight: 800;
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+  }
+  .total-currency { font-size: 13px; font-weight: 500; color: var(--grey-400); margin-left: 4px; }
+
+  /* ?? Sub totals ?? */
+  .subtotals {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 10px;
+  }
+  .subtotal-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .subtotal-row:last-child { border: none; }
+  .subtotal-row .label { color: var(--grey-400); }
+  .subtotal-row .value { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  /* ?? Add button ?? */
+  .add-line-btn {
+    width: 100%; padding: 11px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm);
+    color: var(--grey-400);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all .2s;
+  }
+  .add-line-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-glow); }
+
+  /* ?? Historique ?? */
+  .hist-empty {
+    text-align: center; padding: 60px 20px;
+    color: var(--grey-600);
+  }
+  .hist-empty .hist-icon { font-size: 52px; margin-bottom: 12px; }
+  .hist-empty p { font-size: 14px; line-height: 1.6; }
+
+  .hist-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px;
+    transition: border-color .2s;
+    animation: fadeIn .3s ease;
+  }
+  .hist-card:hover { border-color: rgba(249,115,22,0.3); }
+
+  .hist-card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .hist-client { font-size: 15px; font-weight: 700; }
+  .hist-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--orange);
+    background: var(--orange-glow);
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .hist-meta {
+    display: flex; gap: 14px;
+    font-size: 12px; color: var(--grey-400);
+    margin-bottom: 12px;
+  }
+  .hist-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px; font-weight: 700; color: var(--white);
+    margin-bottom: 12px;
+  }
+  .hist-amount span { font-size: 12px; color: var(--grey-400); font-family: 'Sora', sans-serif; }
+  .hist-actions { display: flex; gap: 8px; }
+
+  /* ?? Badge / chips ?? */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-orange { background: var(--orange-glow); color: var(--orange); }
+  .badge-green { background: rgba(34,197,94,0.12); color: var(--success); }
+
+  /* ?? Step indicator ?? */
+  .steps {
+    display: flex; gap: 6px; margin-bottom: 20px;
+    justify-content: center;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%; background: var(--border);
+    transition: all .3s;
+  }
+  .step-dot.active { background: var(--orange); width: 24px; border-radius: 4px; }
+
+  /* ?? Toast ?? */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 12px 22px; border-radius: 30px;
+    font-size: 13px; font-weight: 600;
+    opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(34,197,94,0.4); color: var(--success); }
+  .toast.error { border-color: rgba(239,68,68,0.4); color: var(--danger); }
+
+  /* ?? Divider ?? */
+  .divider {
+    height: 1px; background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* ?? Infos entreprise ?? */
+  .entreprise-section { margin-bottom: 16px; }
+
+  /* ?? Page title ?? */
+  .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .page-subtitle { font-size: 13px; color: var(--grey-400); margin-bottom: 20px; }
+
+  /* ?? Scroll snap tabs ?? */
+  .tab-content-wrapper { width: 100%; }
+
+  /* ?? TWA config ?? */
+  .config-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .config-row:last-child { border: none; }
+  .config-label { font-size: 13px; font-weight: 600; }
+  .config-value { font-size: 13px; color: var(--orange); font-family: 'DM Mono', monospace; }
+
+  /* ?? Scrollbar ?? */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ?? Responsive ?? */
+  @media (max-width: 380px) {
+    .prestations-header,
+    .prestation-row {
+      grid-template-columns: 1fr 72px 72px 28px;
+      gap: 4px;
+    }
+    .prestation-row input { padding: 9px 8px; font-size: 12px; }
+  }
+
+  /* ?? No select on buttons ?? */
+  button, .nav-tab { user-select: none; -webkit-tap-highlight-color: transparent; }
+
+  /* ?? Loading spinner ?? */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">??</div>
+    <div class="logo-text">Quick<span>Devis</span></div>
+  </div>
+  <div style="font-size:11px; color:var(--grey-400); text-align:right; line-height:1.4;">
+    <div style="font-weight:700;color:var(--white)" id="headerDevisNum">N° QD-001</div>
+    <div id="headerDate"></div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-tab active" onclick="switchTab('nouveau')" id="tab-nouveau">
+    <span class="tab-icon">??</span>Nouveau
+  </div>
+  <div class="nav-tab" onclick="switchTab('prestations')" id="tab-prestations">
+    <span class="tab-icon">??</span>Prestations
+  </div>
+  <div class="nav-tab" onclick="switchTab('historique')" id="tab-historique">
+    <span class="tab-icon">??</span>Historique
+  </div>
+  <div class="nav-tab" onclick="switchTab('parametres')" id="tab-parametres">
+    <span class="tab-icon">??</span>Réglages
+  </div>
+</nav>
+
+<main>
+
+  <!-- ?????????? SECTION : NOUVEAU DEVIS ?????????? -->
+  <section class="section active" id="section-nouveau">
+    <p class="page-title">Nouveau devis</p>
+    <p class="page-subtitle">Remplissez les infos de votre client</p>
+
+    <div class="card">
+      <div class="card-title">?? Informations client</div>
+
+      <div class="form-group">
+        <label>NOM DU CLIENT *</label>
+        <input type="text" id="clientNom" placeholder="Ex : Koné Aya Trading" autocomplete="name">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>TÉLÉPHONE</label>
+          <input type="tel" id="clientTel" placeholder="+225 07 XX XX XX" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label>VILLE</label>
+          <input type="text" id="clientVille" placeholder="Abidjan">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>EMAIL (optionnel)</label>
+        <input type="email" id="clientEmail" placeholder="client@email.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label>OBJET DU DEVIS</label>
+        <input type="text" id="devisObjet" placeholder="Ex : Création site web + maintenance">
+      </div>
+
+      <div class="form-group">
+        <label>VALIDITÉ DU DEVIS</label>
+        <input type="date" id="devisValidite" id="devisValidite">
+      </div>
+
+      <div class="form-group">
+        <label>NOTE / CONDITIONS (optionnel)</label>
+        <textarea id="devisNote" placeholder="Ex : Paiement par tranche possible. Acompte de 50% à la commande…"></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="switchTab('prestations')">
+      Continuer ? Ajouter les prestations
+    </button>
+  </section>
+
+  <!-- ?????????? SECTION : PRESTATIONS ?????????? -->
+  <section class="section" id="section-prestations">
+    <p class="page-title">Prestations</p>
+    <p class="page-subtitle">Ajoutez les lignes de votre devis</p>
+
+    <div class="card">
+      <div class="card-title">?? Détail des prestations</div>
+
+      <div class="prestations-header">
+        <span>DÉSIGNATION</span>
+        <span>QTÉ</span>
+        <span>P.U (FCFA)</span>
+        <span></span>
+      </div>
+
+      <div id="prestationsList"></div>
+
+      <button class="add-line-btn" onclick="addPrestation()">
+        ? Ajouter une ligne
+      </button>
+    </div>
+
+    <!-- Sous-totaux -->
+    <div class="subtotals" id="subtotalsBox">
+      <div class="subtotal-row">
+        <span class="label">Sous-total HT</span>
+        <span class="value" id="sousTotal">0 FCFA</span>
+      </div>
+      <div class="subtotal-row">
+        <span class="label">TVA (18%)</span>
+        <span class="value" id="tvaAmount">0 FCFA</span>
+      </div>
+    </div>
+
+    <div class="total-box">
+      <div>
+        <div class="total-label">TOTAL TTC</div>
+        <div style="font-size:11px;color:var(--grey-600);margin-top:2px;">TVA 18% incluse</div>
+      </div>
+      <div>
+        <span class="total-amount" id="totalTTC">0</span>
+        <span class="total-currency">FCFA</span>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <button class="btn btn-primary" onclick="genererPDF()" id="pdfBtn">
+      <span>??</span> Générer et télécharger le PDF
+      <div class="spinner" id="pdfSpinner"></div>
+    </button>
+
+    <div style="height:10px"></div>
+
+    <button class="btn btn-outline" onclick="switchTab('nouveau')">
+      ? Modifier les infos client
+    </button>
+  </section>
+
+  <!-- ?????????? SECTION : HISTORIQUE ?????????? -->
+  <section class="section" id="section-historique">
+    <p class="page-title">Historique</p>
+    <p class="page-subtitle">Vos devis générés récemment</p>
+
+    <div id="historiqueContainer"></div>
+  </section>
+
+  <!-- ?????????? SECTION : PARAMÈTRES ?????????? -->
+  <section class="section" id="section-parametres">
+    <p class="page-title">Réglages</p>
+    <p class="page-subtitle">Infos de votre entreprise sur les devis</p>
+
+    <div class="card">
+      <div class="card-title">?? Votre entreprise</div>
+
+      <div class="form-group">
+        <label>NOM DE L'ENTREPRISE</label>
+        <input type="text" id="paramEntreprise" placeholder="Ex : Digital Mindset Solutions">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>TÉLÉPHONE</label>
+          <input type="tel" id="paramTel" placeholder="+225 XX XX XX XX">
+        </div>
+        <div class="form-group">
+          <label>WHATSAPP</label>
+          <input type="tel" id="paramWhatsapp" placeholder="+225 XX XX XX XX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>EMAIL</label>
+        <input type="email" id="paramEmail" placeholder="contact@monentreprise.ci">
+      </div>
+      <div class="form-group">
+        <label>ADRESSE / VILLE</label>
+        <input type="text" id="paramAdresse" placeholder="Abidjan, Cocody – Côte d'Ivoire">
+      </div>
+      <div class="form-group">
+        <label>SLOGAN (optionnel)</label>
+        <input type="text" id="paramSlogan" placeholder="Ex : Votre partenaire digital de confiance">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">?? Options de facturation</div>
+      <div class="config-row">
+        <span class="config-label">Taux TVA</span>
+        <span class="config-value">18% (Côte d'Ivoire)</span>
+      </div>
+      <div class="config-row">
+        <span class="config-label">Devise</span>
+        <span class="config-value">FCFA</span>
+      </div>
+      <div class="config-row">
+        <span class="config-label">Format numérotation</span>
+        <span class="config-value">QD-YYYY-XXX</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="sauvegarderParams()">
+      ?? Sauvegarder les réglages
+    </button>
+
+    <div style="height:10px"></div>
+
+    <button class="btn btn-outline" onclick="reinitialiser()" style="color:var(--danger);border-color:rgba(239,68,68,0.25)">
+      ??? Effacer tous les données
+    </button>
+  </section>
+
+</main>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ????????????????????????????????????????????
+//  STATE
+// ????????????????????????????????????????????
+let prestations = [];
+let currentDevisNum = 1;
+let historique = [];
+let params = {};
+
+// ????????????????????????????????????????????
+//  INIT
+// ????????????????????????????????????????????
+function init() {
+  // Charger données localStorage
+  historique = JSON.parse(localStorage.getItem('qd_historique') || '[]');
+  currentDevisNum = parseInt(localStorage.getItem('qd_num') || '1');
+  params = JSON.parse(localStorage.getItem('qd_params') || '{}');
+
+  // Remplir paramètres
+  if (params.entreprise) document.getElementById('paramEntreprise').value = params.entreprise;
+  if (params.tel) document.getElementById('paramTel').value = params.tel;
+  if (params.whatsapp) document.getElementById('paramWhatsapp').value = params.whatsapp;
+  if (params.email) document.getElementById('paramEmail').value = params.email;
+  if (params.adresse) document.getElementById('paramAdresse').value = params.adresse;
+  if (params.slogan) document.getElementById('paramSlogan').value = params.slogan;
+
+  // Date header
+  const now = new Date();
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+  document.getElementById('headerDevisNum').textContent = 'N° ' + formatNum(currentDevisNum);
+
+  // Validité par défaut = 30 jours
+  const validite = new Date();
+  validite.setDate(validite.getDate() + 30);
+  document.getElementById('devisValidite').value = validite.toISOString().split('T')[0];
+
+  // Première prestation vide
+  if (prestations.length === 0) addPrestation();
+
+  renderHistorique();
+}
+
+function formatNum(n) {
+  const year = new Date().getFullYear();
+  return `QD-${year}-${String(n).padStart(3,'0')}`;
+}
+
+// ????????????????????????????????????????????
+//  NAVIGATION
+// ????????????????????????????????????????????
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ????????????????????????????????????????????
+//  PRESTATIONS
+// ????????????????????????????????????????????
+function addPrestation() {
+  const id = Date.now();
+  prestations.push({ id, designation: '', quantite: 1, prixUnitaire: 0 });
+  renderPrestations();
+}
+
+function removePrestation(id) {
+  if (prestations.length <= 1) { showToast('Au moins une ligne requise', 'error'); return; }
+  prestations = prestations.filter(p => p.id !== id);
+  renderPrestations();
+}
+
+function updatePrestation(id, field, value) {
+  const p = prestations.find(p => p.id === id);
+  if (!p) return;
+  if (field === 'quantite' || field === 'prixUnitaire') {
+    p[field] = parseFloat(value) || 0;
+  } else {
+    p[field] = value;
+  }
+  updateTotals();
+}
+
+function renderPrestations() {
+  const container = document.getElementById('prestationsList');
+  container.innerHTML = '';
+  prestations.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'prestation-row';
+    row.innerHTML = `
+      <input type="text" placeholder="Désignation" value="${p.designation}"
+        oninput="updatePrestation(${p.id}, 'designation', this.value)">
+      <input type="number" placeholder="1" value="${p.quantite || ''}" min="0"
+        oninput="updatePrestation(${p.id}, 'quantite', this.value)" style="text-align:center">
+      <input type="number" placeholder="0" value="${p.prixUnitaire || ''}" min="0"
+        oninput="updatePrestation(${p.id}, 'prixUnitaire', this.value)" style="text-align:right">
+      <button class="btn btn-danger" onclick="removePrestation(${p.id})">?</button>
+    `;
+    container.appendChild(row);
+  });
+  updateTotals();
+}
+
+function updateTotals() {
+  const ht = prestations.reduce((sum, p) => sum + (p.quantite * p.prixUnitaire), 0);
+  const tva = ht * 0.18;
+  const ttc = ht + tva;
+
+  document.getElementById('sousTotal').textContent = formatFCFA(ht);
+  document.getElementById('tvaAmount').textContent = formatFCFA(tva);
+  document.getElementById('totalTTC').textContent = formatFCFA(ttc);
+}
+
+function formatFCFA(n) {
+  return Math.round(n).toLocaleString('fr-FR') + ' FCFA';
+}
+
+function formatFCFANum(n) {
+  return Math.round(n).toLocaleString('fr-FR');
+}
+
+// ????????????????????????????????????????????
+//  PARAMÈTRES
+// ????????????????????????????????????????????
+function sauvegarderParams() {
+  params = {
+    entreprise: document.getElementById('paramEntreprise').value,
+    tel: document.getElementById('paramTel').value,
+    whatsapp: document.getElementById('paramWhatsapp').value,
+    email: document.getElementById('paramEmail').value,
+    adresse: document.getElementById('paramAdresse').value,
+    slogan: document.getElementById('paramSlogan').value,
+  };
+  localStorage.setItem('qd_params', JSON.stringify(params));
+  showToast('? Réglages sauvegardés !', 'success');
+}
+
+// ????????????????????????????????????????????
+//  PDF GENERATION
+// ????????????????????????????????????????????
+async function genererPDF() {
+  const clientNom = document.getElementById('clientNom').value.trim();
+  if (!clientNom) {
+    showToast('?? Renseignez le nom du client', 'error');
+    switchTab('nouveau'); return;
+  }
+
+  const lignesValides = prestations.filter(p => p.designation && p.prixUnitaire > 0);
+  if (lignesValides.length === 0) {
+    showToast('?? Ajoutez au moins une prestation', 'error'); return;
+  }
+
+  // Show loading
+  const btn = document.getElementById('pdfBtn');
+  const spinner = document.getElementById('pdfSpinner');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+
+  await new Promise(r => setTimeout(r, 100)); // let UI update
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const W = 210; const H = 297;
+    const margin = 18;
+    let y = 0;
+
+    // ?? Couleurs
+    const navyR = 10, navyG = 22, navyB = 40;
+    const orangeR = 249, orangeG = 115, orangeB = 22;
+
+    // ?? Header band
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.rect(0, 0, W, 50, 'F');
+
+    // Orange accent bar
+    doc.setFillColor(orangeR, orangeG, orangeB);
+    doc.rect(0, 47, W, 3, 'F');
+
+    // Logo/Entreprise
+    doc.setTextColor(255, 255, 255);
+    const entNom = params.entreprise || 'Mon Entreprise';
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text(entNom, margin, 20);
+
+    if (params.slogan) {
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(180, 190, 210);
+      doc.text(params.slogan, margin, 27);
+    }
+
+    // Contact entreprise
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(180, 190, 210);
+    let entY = 34;
+    if (params.tel) { doc.text('?? ' + params.tel, margin, entY); entY += 5; }
+    if (params.email) { doc.text('? ' + params.email, margin, entY); }
+    if (params.adresse) { doc.text('?? ' + params.adresse, W - margin, 34, { align: 'right' }); }
+
+    // DEVIS title (right)
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(255, 255, 255);
+    doc.text('DEVIS', W - margin, 20, { align: 'right' });
+    const devisNum = formatNum(currentDevisNum);
+    doc.setFontSize(10);
+    doc.setTextColor(orangeR, orangeG, orangeB);
+    doc.text(devisNum, W - margin, 28, { align: 'right' });
+
+    y = 60;
+
+    // ?? Infos client + devis
+    // Client card
+    doc.setFillColor(240, 244, 250);
+    doc.roundedRect(margin, y, 82, 40, 3, 3, 'F');
+    doc.setFillColor(orangeR, orangeG, orangeB);
+    doc.roundedRect(margin, y, 82, 8, 3, 3, 'F');
+    doc.rect(margin, y + 5, 82, 3, 'F'); // fill bottom corners
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text('CLIENT', margin + 4, y + 5.5);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(navyR, navyG, navyB);
+    doc.text(clientNom, margin + 4, y + 16);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 90, 110);
+    let cy = y + 23;
+    const clientTel = document.getElementById('clientTel').value;
+    const clientEmail = document.getElementById('clientEmail').value;
+    const clientVille = document.getElementById('clientVille').value;
+    if (clientTel) { doc.text(clientTel, margin + 4, cy); cy += 5; }
+    if (clientEmail) { doc.text(clientEmail, margin + 4, cy); cy += 5; }
+    if (clientVille) { doc.text(clientVille, margin + 4, cy); }
+
+    // Devis info card
+    const dx = W - margin - 82;
+    doc.setFillColor(240, 244, 250);
+    doc.roundedRect(dx, y, 82, 40, 3, 3, 'F');
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.roundedRect(dx, y, 82, 8, 3, 3, 'F');
+    doc.rect(dx, y + 5, 82, 3, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(255, 255, 255);
+    doc.text('DÉTAILS DU DEVIS', dx + 4, y + 5.5);
+
+    const now = new Date();
+    const validite = document.getElementById('devisValidite').value;
+    const rows = [
+      ['Numéro', devisNum],
+      ['Date', now.toLocaleDateString('fr-FR')],
+      ['Validité', validite ? new Date(validite).toLocaleDateString('fr-FR') : '30 jours'],
+    ];
+    let dy2 = y + 14;
+    rows.forEach(([lbl, val]) => {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(100, 110, 130);
+      doc.text(lbl + ' :', dx + 4, dy2);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(navyR, navyG, navyB);
+      doc.text(val, dx + 78, dy2, { align: 'right' });
+      dy2 += 6;
+    });
+
+    y += 48;
+
+    // Objet
+    const objet = document.getElementById('devisObjet').value;
+    if (objet) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(navyR, navyG, navyB);
+      doc.text('Objet : ', margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(60, 70, 90);
+      doc.text(objet, margin + 18, y);
+      y += 8;
+    }
+
+    y += 4;
+
+    // ?? Table des prestations
+    const colW = [90, 22, 35, 35];
+    const colX = [margin, margin + colW[0], margin + colW[0] + colW[1], margin + colW[0] + colW[1] + colW[2]];
+    const tableWidth = W - margin * 2;
+
+    // Header table
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.rect(margin, y, tableWidth, 9, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(255, 255, 255);
+    const headers = ['DÉSIGNATION', 'QTÉ', 'PRIX UNITAIRE', 'TOTAL HT'];
+    headers.forEach((h, i) => {
+      const align = i === 0 ? 'left' : 'right';
+      const xPos = i === 0 ? colX[i] + 3 : colX[i] + colW[i] - 2;
+      doc.text(h, xPos, y + 6, { align });
+    });
+
+    y += 9;
+
+    // Rows
+    lignesValides.forEach((p, idx) => {
+      const ht = p.quantite * p.prixUnitaire;
+      const bg = idx % 2 === 0;
+      if (bg) {
+        doc.setFillColor(247, 249, 252);
+        doc.rect(margin, y, tableWidth, 8, 'F');
+      }
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(30, 40, 60);
+      doc.text(p.designation, colX[0] + 3, y + 5.5);
+
+      doc.setTextColor(80, 90, 110);
+      doc.text(String(p.quantite), colX[1] + colW[1] - 2, y + 5.5, { align: 'right' });
+      doc.text(Math.round(p.prixUnitaire).toLocaleString('fr-FR'), colX[2] + colW[2] - 2, y + 5.5, { align: 'right' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(navyR, navyG, navyB);
+      doc.text(Math.round(ht).toLocaleString('fr-FR'), colX[3] + colW[3] - 2, y + 5.5, { align: 'right' });
+
+      // Bottom border
+      doc.setDrawColor(220, 225, 235);
+      doc.line(margin, y + 8, margin + tableWidth, y + 8);
+
+      y += 8;
+    });
+
+    // ?? Totaux
+    y += 6;
+    const htTotal = lignesValides.reduce((s, p) => s + p.quantite * p.prixUnitaire, 0);
+    const tva = htTotal * 0.18;
+    const ttc = htTotal + tva;
+
+    const totX = W - margin - 70;
+    const totW = 70;
+
+    const totRows = [
+      ['Sous-total HT', htTotal, false],
+      ['TVA (18%)', tva, false],
+    ];
+
+    totRows.forEach(([lbl, val]) => {
+      doc.setFillColor(245, 247, 252);
+      doc.rect(totX, y, totW, 7, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(90, 100, 120);
+      doc.text(lbl, totX + 3, y + 5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 40, 60);
+      doc.text(Math.round(val).toLocaleString('fr-FR') + ' FCFA', totX + totW - 2, y + 5, { align: 'right' });
+      y += 7;
+    });
+
+    // TTC row
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.roundedRect(totX, y, totW, 11, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    doc.text('TOTAL TTC', totX + 3, y + 7.5);
+    doc.setTextColor(orangeR, orangeG, orangeB);
+    doc.setFontSize(10);
+    doc.text(Math.round(ttc).toLocaleString('fr-FR') + ' FCFA', totX + totW - 2, y + 7.5, { align: 'right' });
+    y += 18;
+
+    // ?? Note / conditions
+    const note = document.getElementById('devisNote').value;
+    if (note) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(navyR, navyG, navyB);
+      doc.text('Notes et conditions :', margin, y);
+      y += 5;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(90, 100, 120);
+      const lines = doc.splitTextToSize(note, tableWidth);
+      doc.text(lines, margin, y);
+      y += lines.length * 5 + 4;
+    }
+
+    // ?? Signature zone
+    y = Math.max(y + 10, H - 55);
+    doc.setDrawColor(200, 210, 225);
+    doc.setDash([2, 2]);
+    doc.line(margin, y, margin + 70, y);
+    doc.setDash([]);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(140, 150, 170);
+    doc.text('Signature et cachet client', margin, y + 5);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Lu et approuvé', margin, y + 10);
+
+    // ?? Footer
+    doc.setFillColor(navyR, navyG, navyB);
+    doc.rect(0, H - 14, W, 14, 'F');
+    doc.setFillColor(orangeR, orangeG, orangeB);
+    doc.rect(0, H - 14, W, 2, 'F');
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(160, 175, 200);
+    const footText = params.entreprise ? `${params.entreprise} — ${params.adresse || 'Côte d\'Ivoire'}` : 'Généré avec QuickDevis';
+    doc.text(footText, W / 2, H - 5, { align: 'center' });
+    if (params.tel) doc.text(`Tél : ${params.tel}${params.whatsapp ? ' | WhatsApp : ' + params.whatsapp : ''}`, W / 2, H - 9, { align: 'center' });
+
+    // Save PDF
+    const fileName = `Devis_${devisNum}_${clientNom.replace(/\s+/g, '_')}.pdf`;
+    doc.save(fileName);
+
+    // Save to history
+    const entry = {
+      num: devisNum,
+      numIndex: currentDevisNum,
+      client: clientNom,
+      tel: document.getElementById('clientTel').value,
+      objet: document.getElementById('devisObjet').value,
+      montant: Math.round(ttc),
+      date: now.toLocaleDateString('fr-FR'),
+      lignes: lignesValides.length,
+    };
+    historique.unshift(entry);
+    if (historique.length > 20) historique.pop();
+
+    currentDevisNum++;
+    localStorage.setItem('qd_num', currentDevisNum);
+    localStorage.setItem('qd_historique', JSON.stringify(historique));
+    document.getElementById('headerDevisNum').textContent = 'N° ' + formatNum(currentDevisNum);
+
+    renderHistorique();
+    showToast('? Devis PDF généré !', 'success');
+
+    // Reset form
+    setTimeout(() => {
+      resetForm();
+    }, 1200);
+
+  } catch(err) {
+    console.error(err);
+    showToast('? Erreur lors de la génération', 'error');
+  }
+
+  btn.disabled = false;
+  spinner.style.display = 'none';
+}
+
+function resetForm() {
+  document.getElementById('clientNom').value = '';
+  document.getElementById('clientTel').value = '';
+  document.getElementById('clientEmail').value = '';
+  document.getElementById('clientVille').value = '';
+  document.getElementById('devisObjet').value = '';
+  document.getElementById('devisNote').value = '';
+  prestations = [];
+  addPrestation();
+  switchTab('historique');
+}
+
+// ????????????????????????????????????????????
+//  HISTORIQUE
+// ????????????????????????????????????????????
+function renderHistorique() {
+  const container = document.getElementById('historiqueContainer');
+  if (historique.length === 0) {
+    container.innerHTML = `
+      <div class="hist-empty">
+        <div class="hist-icon">??</div>
+        <p>Aucun devis généré pour l'instant.<br>Créez votre premier devis !</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  historique.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'hist-card';
+    card.innerHTML = `
+      <div class="hist-card-top">
+        <div class="hist-client">${h.client}</div>
+        <div class="hist-num">${h.num}</div>
+      </div>
+      <div class="hist-meta">
+        <span>?? ${h.date}</span>
+        <span>?? ${h.lignes} ligne${h.lignes > 1 ? 's' : ''}</span>
+        ${h.tel ? `<span>?? ${h.tel}</span>` : ''}
+      </div>
+      ${h.objet ? `<div style="font-size:12px;color:var(--grey-400);margin-bottom:10px;">?? ${h.objet}</div>` : ''}
+      <div class="hist-amount">${Math.round(h.montant).toLocaleString('fr-FR')} <span>FCFA TTC</span></div>
+      <div class="hist-actions">
+        <button class="btn btn-outline btn-sm" onclick="regenerer(${h.numIndex})">
+          ?? Régénérer
+        </button>
+        <button class="btn btn-danger" onclick="supprimerHist(${h.numIndex})" title="Supprimer">
+          ??
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function supprimerHist(numIndex) {
+  historique = historique.filter(h => h.numIndex !== numIndex);
+  localStorage.setItem('qd_historique', JSON.stringify(historique));
+  renderHistorique();
+  showToast('Devis supprimé de l\'historique', 'success');
+}
+
+function regenerer(numIndex) {
+  showToast('Créez un nouveau devis pour ce client', 'success');
+  switchTab('nouveau');
+}
+
+// ????????????????????????????????????????????
+//  UTILS
+// ????????????????????????????????????????????
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => { t.classList.remove('show'); }, 3000);
+}
+
+function reinitialiser() {
+  if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ?')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+// ????????????????????????????????????????????
+//  START
+// ????????????????????????????????????????????
+init();
+</script>
+</body>
+</html>
