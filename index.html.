@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a1628">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>QuickDevis — Devis Pro en 2 minutes</title>
+<title>QuickDevis â€” Devis Pro en 2 minutes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -43,7 +43,7 @@
     overflow-x: hidden;
   }
 
-  /* ?? Background décor ?? */
+  /* ?? Background dÃ©cor ?? */
   body::before {
     content: '';
     position: fixed;
@@ -413,7 +413,7 @@
     <div class="logo-text">Quick<span>Devis</span></div>
   </div>
   <div style="font-size:11px; color:var(--grey-400); text-align:right; line-height:1.4;">
-    <div style="font-weight:700;color:var(--white)" id="headerDevisNum">N° QD-001</div>
+    <div style="font-weight:700;color:var(--white)" id="headerDevisNum">NÂ° QD-001</div>
     <div id="headerDate"></div>
   </div>
 </header>
@@ -430,7 +430,7 @@
     <span class="tab-icon">??</span>Historique
   </div>
   <div class="nav-tab" onclick="switchTab('parametres')" id="tab-parametres">
-    <span class="tab-icon">??</span>Réglages
+    <span class="tab-icon">??</span>RÃ©glages
   </div>
 </nav>
 
@@ -446,12 +446,12 @@
 
       <div class="form-group">
         <label>NOM DU CLIENT *</label>
-        <input type="text" id="clientNom" placeholder="Ex : Koné Aya Trading" autocomplete="name">
+        <input type="text" id="clientNom" placeholder="Ex : KonÃ© Aya Trading" autocomplete="name">
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>TÉLÉPHONE</label>
+          <label>TÃ‰LÃ‰PHONE</label>
           <input type="tel" id="clientTel" placeholder="+225 07 XX XX XX" autocomplete="tel">
         </div>
         <div class="form-group">
@@ -467,17 +467,17 @@
 
       <div class="form-group">
         <label>OBJET DU DEVIS</label>
-        <input type="text" id="devisObjet" placeholder="Ex : Création site web + maintenance">
+        <input type="text" id="devisObjet" placeholder="Ex : CrÃ©ation site web + maintenance">
       </div>
 
       <div class="form-group">
-        <label>VALIDITÉ DU DEVIS</label>
+        <label>VALIDITÃ‰ DU DEVIS</label>
         <input type="date" id="devisValidite" id="devisValidite">
       </div>
 
       <div class="form-group">
         <label>NOTE / CONDITIONS (optionnel)</label>
-        <textarea id="devisNote" placeholder="Ex : Paiement par tranche possible. Acompte de 50% à la commande…"></textarea>
+        <textarea id="devisNote" placeholder="Ex : Paiement par tranche possible. Acompte de 50% Ã  la commandeâ€¦"></textarea>
       </div>
     </div>
 
@@ -492,11 +492,11 @@
     <p class="page-subtitle">Ajoutez les lignes de votre devis</p>
 
     <div class="card">
-      <div class="card-title">?? Détail des prestations</div>
+      <div class="card-title">?? DÃ©tail des prestations</div>
 
       <div class="prestations-header">
-        <span>DÉSIGNATION</span>
-        <span>QTÉ</span>
+        <span>DÃ‰SIGNATION</span>
+        <span>QTÃ‰</span>
         <span>P.U (FCFA)</span>
         <span></span>
       </div>
@@ -534,7 +534,7 @@
     <div style="height:16px"></div>
 
     <button class="btn btn-primary" onclick="genererPDF()" id="pdfBtn">
-      <span>??</span> Générer et télécharger le PDF
+      <span>??</span> GÃ©nÃ©rer et tÃ©lÃ©charger le PDF
       <div class="spinner" id="pdfSpinner"></div>
     </button>
 
@@ -548,14 +548,14 @@
   <!-- ?????????? SECTION : HISTORIQUE ?????????? -->
   <section class="section" id="section-historique">
     <p class="page-title">Historique</p>
-    <p class="page-subtitle">Vos devis générés récemment</p>
+    <p class="page-subtitle">Vos devis gÃ©nÃ©rÃ©s rÃ©cemment</p>
 
     <div id="historiqueContainer"></div>
   </section>
 
-  <!-- ?????????? SECTION : PARAMÈTRES ?????????? -->
+  <!-- ?????????? SECTION : PARAMÃˆTRES ?????????? -->
   <section class="section" id="section-parametres">
-    <p class="page-title">Réglages</p>
+    <p class="page-title">RÃ©glages</p>
     <p class="page-subtitle">Infos de votre entreprise sur les devis</p>
 
     <div class="card">
@@ -567,7 +567,7 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>TÉLÉPHONE</label>
+          <label>TÃ‰LÃ‰PHONE</label>
           <input type="tel" id="paramTel" placeholder="+225 XX XX XX XX">
         </div>
         <div class="form-group">
@@ -581,7 +581,7 @@
       </div>
       <div class="form-group">
         <label>ADRESSE / VILLE</label>
-        <input type="text" id="paramAdresse" placeholder="Abidjan, Cocody – Côte d'Ivoire">
+        <input type="text" id="paramAdresse" placeholder="Abidjan, Cocody â€“ CÃ´te d'Ivoire">
       </div>
       <div class="form-group">
         <label>SLOGAN (optionnel)</label>
@@ -593,26 +593,26 @@
       <div class="card-title">?? Options de facturation</div>
       <div class="config-row">
         <span class="config-label">Taux TVA</span>
-        <span class="config-value">18% (Côte d'Ivoire)</span>
+        <span class="config-value">18% (CÃ´te d'Ivoire)</span>
       </div>
       <div class="config-row">
         <span class="config-label">Devise</span>
         <span class="config-value">FCFA</span>
       </div>
       <div class="config-row">
-        <span class="config-label">Format numérotation</span>
+        <span class="config-label">Format numÃ©rotation</span>
         <span class="config-value">QD-YYYY-XXX</span>
       </div>
     </div>
 
     <button class="btn btn-primary" onclick="sauvegarderParams()">
-      ?? Sauvegarder les réglages
+      ?? Sauvegarder les rÃ©glages
     </button>
 
     <div style="height:10px"></div>
 
     <button class="btn btn-outline" onclick="reinitialiser()" style="color:var(--danger);border-color:rgba(239,68,68,0.25)">
-      ??? Effacer tous les données
+      ??? Effacer tous les donnÃ©es
     </button>
   </section>
 
@@ -634,12 +634,12 @@ let params = {};
 //  INIT
 // ????????????????????????????????????????????
 function init() {
-  // Charger données localStorage
+  // Charger donnÃ©es localStorage
   historique = JSON.parse(localStorage.getItem('qd_historique') || '[]');
   currentDevisNum = parseInt(localStorage.getItem('qd_num') || '1');
   params = JSON.parse(localStorage.getItem('qd_params') || '{}');
 
-  // Remplir paramètres
+  // Remplir paramÃ¨tres
   if (params.entreprise) document.getElementById('paramEntreprise').value = params.entreprise;
   if (params.tel) document.getElementById('paramTel').value = params.tel;
   if (params.whatsapp) document.getElementById('paramWhatsapp').value = params.whatsapp;
@@ -650,14 +650,14 @@ function init() {
   // Date header
   const now = new Date();
   document.getElementById('headerDate').textContent = now.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
-  document.getElementById('headerDevisNum').textContent = 'N° ' + formatNum(currentDevisNum);
+  document.getElementById('headerDevisNum').textContent = 'NÂ° ' + formatNum(currentDevisNum);
 
-  // Validité par défaut = 30 jours
+  // ValiditÃ© par dÃ©faut = 30 jours
   const validite = new Date();
   validite.setDate(validite.getDate() + 30);
   document.getElementById('devisValidite').value = validite.toISOString().split('T')[0];
 
-  // Première prestation vide
+  // PremiÃ¨re prestation vide
   if (prestations.length === 0) addPrestation();
 
   renderHistorique();
@@ -711,7 +711,7 @@ function renderPrestations() {
     const row = document.createElement('div');
     row.className = 'prestation-row';
     row.innerHTML = `
-      <input type="text" placeholder="Désignation" value="${p.designation}"
+      <input type="text" placeholder="DÃ©signation" value="${p.designation}"
         oninput="updatePrestation(${p.id}, 'designation', this.value)">
       <input type="number" placeholder="1" value="${p.quantite || ''}" min="0"
         oninput="updatePrestation(${p.id}, 'quantite', this.value)" style="text-align:center">
@@ -743,7 +743,7 @@ function formatFCFANum(n) {
 }
 
 // ????????????????????????????????????????????
-//  PARAMÈTRES
+//  PARAMÃˆTRES
 // ????????????????????????????????????????????
 function sauvegarderParams() {
   params = {
@@ -755,7 +755,7 @@ function sauvegarderParams() {
     slogan: document.getElementById('paramSlogan').value,
   };
   localStorage.setItem('qd_params', JSON.stringify(params));
-  showToast('? Réglages sauvegardés !', 'success');
+  showToast('? RÃ©glages sauvegardÃ©s !', 'success');
 }
 
 // ????????????????????????????????????????????
@@ -876,14 +876,14 @@ async function genererPDF() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
-    doc.text('DÉTAILS DU DEVIS', dx + 4, y + 5.5);
+    doc.text('DÃ‰TAILS DU DEVIS', dx + 4, y + 5.5);
 
     const now = new Date();
     const validite = document.getElementById('devisValidite').value;
     const rows = [
-      ['Numéro', devisNum],
+      ['NumÃ©ro', devisNum],
       ['Date', now.toLocaleDateString('fr-FR')],
-      ['Validité', validite ? new Date(validite).toLocaleDateString('fr-FR') : '30 jours'],
+      ['ValiditÃ©', validite ? new Date(validite).toLocaleDateString('fr-FR') : '30 jours'],
     ];
     let dy2 = y + 14;
     rows.forEach(([lbl, val]) => {
@@ -926,7 +926,7 @@ async function genererPDF() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
     doc.setTextColor(255, 255, 255);
-    const headers = ['DÉSIGNATION', 'QTÉ', 'PRIX UNITAIRE', 'TOTAL HT'];
+    const headers = ['DÃ‰SIGNATION', 'QTÃ‰', 'PRIX UNITAIRE', 'TOTAL HT'];
     headers.forEach((h, i) => {
       const align = i === 0 ? 'left' : 'right';
       const xPos = i === 0 ? colX[i] + 3 : colX[i] + colW[i] - 2;
@@ -1030,7 +1030,7 @@ async function genererPDF() {
     doc.setTextColor(140, 150, 170);
     doc.text('Signature et cachet client', margin, y + 5);
     doc.setFont('helvetica', 'italic');
-    doc.text('Lu et approuvé', margin, y + 10);
+    doc.text('Lu et approuvÃ©', margin, y + 10);
 
     // ?? Footer
     doc.setFillColor(navyR, navyG, navyB);
@@ -1041,9 +1041,9 @@ async function genererPDF() {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
     doc.setTextColor(160, 175, 200);
-    const footText = params.entreprise ? `${params.entreprise} — ${params.adresse || 'Côte d\'Ivoire'}` : 'Généré avec QuickDevis';
+    const footText = params.entreprise ? `${params.entreprise} â€” ${params.adresse || 'CÃ´te d\'Ivoire'}` : 'GÃ©nÃ©rÃ© avec QuickDevis';
     doc.text(footText, W / 2, H - 5, { align: 'center' });
-    if (params.tel) doc.text(`Tél : ${params.tel}${params.whatsapp ? ' | WhatsApp : ' + params.whatsapp : ''}`, W / 2, H - 9, { align: 'center' });
+    if (params.tel) doc.text(`TÃ©l : ${params.tel}${params.whatsapp ? ' | WhatsApp : ' + params.whatsapp : ''}`, W / 2, H - 9, { align: 'center' });
 
     // Save PDF
     const fileName = `Devis_${devisNum}_${clientNom.replace(/\s+/g, '_')}.pdf`;
@@ -1066,10 +1066,10 @@ async function genererPDF() {
     currentDevisNum++;
     localStorage.setItem('qd_num', currentDevisNum);
     localStorage.setItem('qd_historique', JSON.stringify(historique));
-    document.getElementById('headerDevisNum').textContent = 'N° ' + formatNum(currentDevisNum);
+    document.getElementById('headerDevisNum').textContent = 'NÂ° ' + formatNum(currentDevisNum);
 
     renderHistorique();
-    showToast('? Devis PDF généré !', 'success');
+    showToast('? Devis PDF gÃ©nÃ©rÃ© !', 'success');
 
     // Reset form
     setTimeout(() => {
@@ -1078,7 +1078,7 @@ async function genererPDF() {
 
   } catch(err) {
     console.error(err);
-    showToast('? Erreur lors de la génération', 'error');
+    showToast('? Erreur lors de la gÃ©nÃ©ration', 'error');
   }
 
   btn.disabled = false;
@@ -1106,7 +1106,7 @@ function renderHistorique() {
     container.innerHTML = `
       <div class="hist-empty">
         <div class="hist-icon">??</div>
-        <p>Aucun devis généré pour l'instant.<br>Créez votre premier devis !</p>
+        <p>Aucun devis gÃ©nÃ©rÃ© pour l'instant.<br>CrÃ©ez votre premier devis !</p>
       </div>`;
     return;
   }
@@ -1129,7 +1129,7 @@ function renderHistorique() {
       <div class="hist-amount">${Math.round(h.montant).toLocaleString('fr-FR')} <span>FCFA TTC</span></div>
       <div class="hist-actions">
         <button class="btn btn-outline btn-sm" onclick="regenerer(${h.numIndex})">
-          ?? Régénérer
+          ?? RÃ©gÃ©nÃ©rer
         </button>
         <button class="btn btn-danger" onclick="supprimerHist(${h.numIndex})" title="Supprimer">
           ??
@@ -1144,11 +1144,11 @@ function supprimerHist(numIndex) {
   historique = historique.filter(h => h.numIndex !== numIndex);
   localStorage.setItem('qd_historique', JSON.stringify(historique));
   renderHistorique();
-  showToast('Devis supprimé de l\'historique', 'success');
+  showToast('Devis supprimÃ© de l\'historique', 'success');
 }
 
 function regenerer(numIndex) {
-  showToast('Créez un nouveau devis pour ce client', 'success');
+  showToast('CrÃ©ez un nouveau devis pour ce client', 'success');
   switchTab('nouveau');
 }
 
@@ -1163,7 +1163,7 @@ function showToast(msg, type = 'success') {
 }
 
 function reinitialiser() {
-  if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ?')) {
+  if (confirm('ÃŠtes-vous sÃ»r de vouloir effacer toutes les donnÃ©es ?')) {
     localStorage.clear();
     location.reload();
   }
